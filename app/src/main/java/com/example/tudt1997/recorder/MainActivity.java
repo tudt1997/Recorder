@@ -1,12 +1,16 @@
 package com.example.tudt1997.recorder;
 
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -22,15 +26,14 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private Button startButton;
     private Button stopButton;
-    public byte[] buffer;
     public static DatagramSocket socket;
     private int port = 50005;
 
     AudioRecord recorder;
 
-    private int sampleRate = 16000; // 44100 for music
+    private int sampleRate = 16000;
     private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-    private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
+    private int audioFormat = AudioFormat.ENCODING_PCM_8BIT;
     int minBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
     private volatile boolean status;
 
@@ -87,45 +90,57 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public void onClickVisualize(View view) {
+        Intent intent = new Intent(MainActivity.this, VisualizerActivity.class);
+        EditText editText = findViewById(R.id.editText);
+        String host = editText.getText().toString();
+        intent.putExtra("host", host);
+        this.startActivity(intent);
+    }
+
     public void startStreaming() {
         Thread streamThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
+            try {
 
-                    DatagramSocket socket = new DatagramSocket();
-                    Log.d("VS", "Socket Created");
+//                DatagramSocket socket = new DatagramSocket();
+                Log.d("VS", "Socket Created");
 
-                    byte[] buffer = new byte[minBufSize];
+                byte[] buffer = new byte[minBufSize];
 
-                    Log.d("VS", "Buffer created of size " + minBufSize);
-                    DatagramPacket packet;
+                Log.d("VS", "Buffer created of size " + minBufSize);
+//                DatagramPacket packet;
 
-                    EditText editText = findViewById(R.id.editText);
-                    InetAddress destination = InetAddress.getByName(editText.getText().toString());
-                    Log.d("VS", "Address retrieved");
+                EditText editText = findViewById(R.id.editText);
+                String host = editText.getText().toString();
+                InetAddress destination = InetAddress.getByName(host);
+                Log.d("VS", "Address retrieved");
 
-                    recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, minBufSize * 10);
-                    Log.d("VS", "Recorder initialized");
+                Socket socketTCP = new Socket(destination, port);
+                DataOutputStream out = new DataOutputStream(socketTCP.getOutputStream());
+                recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, minBufSize * 10);
+                Log.d("VS", "Recorder initialized");
 
-                    recorder.startRecording();
+                recorder.startRecording();
 
-                    while (status) {
-                        //reading data from MIC into buffer
-                        minBufSize = recorder.read(buffer, 0, buffer.length);
+                while (status) {
+                    //reading data from MIC into buffer
+                    minBufSize = recorder.read(buffer, 0, buffer.length);
 
-                        //putting buffer in the packet
-                        packet = new DatagramPacket(buffer, buffer.length, destination, port);
-
-                        socket.send(packet);
-                        System.out.println("MinBufferSize: " + minBufSize);
-                    }
-                } catch (UnknownHostException e) {
-                    Log.e("VS", "UnknownHostException");
-                }catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("VS", "IOException");
+                    //putting buffer in the packet
+//                    packet = new DatagramPacket(buffer, buffer.length, destination, port);
+//
+//                    socket.send(packet);
+                    out.write(buffer, 0, 1280);
+                    System.out.println("MinBufferSize: " + minBufSize);
                 }
+            } catch (UnknownHostException e) {
+                Log.e("VS", "UnknownHostException");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("VS", "IOException");
+            }
             }
 
         });
