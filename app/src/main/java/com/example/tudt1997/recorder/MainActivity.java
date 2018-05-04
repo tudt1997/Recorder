@@ -26,14 +26,12 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private Button startButton;
     private Button stopButton;
-    public static DatagramSocket socket;
     private int port = 50005;
 
     AudioRecord recorder;
-
     private int sampleRate = 16000;
-    private int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-    private int audioFormat = AudioFormat.ENCODING_PCM_8BIT;
+    private int channelConfig = AudioFormat.CHANNEL_IN_MONO;
+    private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
     int minBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
     private volatile boolean status;
 
