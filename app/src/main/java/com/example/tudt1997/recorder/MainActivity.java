@@ -11,6 +11,10 @@ import java.net.UnknownHostException;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -23,7 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private Button startButton;
     private Button stopButton;
     private int port = 50005;
@@ -36,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private volatile boolean status;
 
     private Context context;
+
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private byte ax, ay, az;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,9 +59,22 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(startListener);
         stopButton.setOnClickListener(stopListener);
 
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
         context = getApplicationContext();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
     }
 
     private final OnClickListener startListener = new OnClickListener() {
@@ -105,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
 //                DatagramSocket socket = new DatagramSocket();
                 Log.d("VS", "Socket Created");
 
-                byte[] buffer = new byte[minBufSize];
-
+                short[] buffer = new short[minBufSize];
+                byte[] byteBuffer = new byte[minBufSize];
                 Log.d("VS", "Buffer created of size " + minBufSize);
 //                DatagramPacket packet;
 
@@ -125,12 +146,18 @@ public class MainActivity extends AppCompatActivity {
                 while (status) {
                     //reading data from MIC into buffer
                     minBufSize = recorder.read(buffer, 0, buffer.length);
-
                     //putting buffer in the packet
 //                    packet = new DatagramPacket(buffer, buffer.length, destination, port);
 //
 //                    socket.send(packet);
-                    out.write(buffer, 0, 1280);
+                    for (int i = 0; i < minBufSize; i++) {
+                        byteBuffer[i] = (byte) (((buffer[i] + 32768) >> 8) & 0xff);
+                    }
+                    out.write(byteBuffer, 0, 1280);
+                    out.writeByte(ax);
+                    out.writeByte(ay);
+                    out.writeByte(az);
+                    out.flush();
                     System.out.println("MinBufferSize: " + minBufSize);
                 }
             } catch (UnknownHostException e) {
@@ -143,5 +170,22 @@ public class MainActivity extends AppCompatActivity {
 
         });
         streamThread.start();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            ax = (byte) (sensorEvent.values[0] * 10);
+            ay = (byte) (sensorEvent.values[1] * 10);
+            az = (byte) (sensorEvent.values[2] * 10);
+            String string = ax + " " + ay + " " + az;
+            System.out.println(string);
+            Log.d("VA", "Sensor working");
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

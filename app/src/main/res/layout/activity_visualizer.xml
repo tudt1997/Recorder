@@ -1,26 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:fitsSystemWindows="true"
-  tools:context="com.example.tudt1997.recorder.VisualizerActivity">
-
-  <android.support.design.widget.AppBarLayout
+<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:fitsSystemWindows="true"-->
+    <!--tools:context="com.example.tudt1997.recorder.VisualizerActivity">-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context=".VisualizerActivity" >
 
-    <android.support.v7.widget.Toolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="?attr/actionBarSize"
-      android:background="?attr/colorPrimary"
-      app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
-  </android.support.design.widget.AppBarLayout>
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
-  <include layout="@layout/content_visualizer" />
+    <!--</android.support.design.widget.AppBarLayout>-->
 
-</android.support.design.widget.CoordinatorLayout>
+    <!--<include layout="@layout/content_visualizer" />-->
+    <include
+        layout="@layout/content_visualizer"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarXL"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="360dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar"
+        android:scaleX="-1" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarXR"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/determinateBarXL"
+        android:layout_toEndOf="@+id/determinateBarXL"
+        android:layout_marginTop="360dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarYL"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/determinateBarXL"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar"
+        android:scaleX="-1" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarYR"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/determinateBarXR"
+        android:layout_toRightOf="@+id/determinateBarYL"
+        android:layout_toEndOf="@+id/determinateBarYL"
+        android:layout_marginTop="24dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarZL"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/determinateBarYL"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar"
+        android:scaleX="-1" />
+
+    <ProgressBar
+        android:id="@+id/determinateBarZR"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/determinateBarYR"
+        android:layout_toRightOf="@+id/determinateBarZL"
+        android:layout_toEndOf="@+id/determinateBarZL"
+        android:layout_marginTop="24dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_bar" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/determinateBarXL"
+        android:text="x" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/determinateBarYL"
+        android:text="y" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/determinateBarZL"
+        android:text="z" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="320dp"
+        android:text="Accelerometer" />
+
+    <!--</android.support.design.widget.CoordinatorLayout>-->
+</RelativeLayout>

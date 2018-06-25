@@ -43,43 +43,43 @@ class SimpleWaveformRenderer implements WaveformRenderer {
         canvas.drawPath(waveformPath, foregroundPaint);
     }
 
-    @Override
-    public void render(Canvas canvas, short[] waveform) {
-        canvas.drawColor(backgroundColour);
-        float width = canvas.getWidth();
-        float height = canvas.getHeight();
-        waveformPath.reset();
-        if (waveform != null) {
-            renderWaveform(waveform, width, height);
-        } else {
-            renderBlank(width, height);
-        }
-        canvas.drawPath(waveformPath, foregroundPaint);
-    }
+//    @Override
+//    public void render(Canvas canvas, short[] waveform) {
+//        canvas.drawColor(backgroundColour);
+//        float width = canvas.getWidth();
+//        float height = canvas.getHeight();
+//        waveformPath.reset();
+//        if (waveform != null) {
+//            renderWaveform(waveform, width, height);
+//        } else {
+//            renderBlank(width, height);
+//        }
+//        canvas.drawPath(waveformPath, foregroundPaint);
+//    }
 
     private void renderWaveform(byte[] waveform, float width, float height) {
         float xIncrement = width / (float) (waveform.length);
         float yIncrement = height / Y_FACTOR;
         int halfHeight = (int) (height * HALF_FACTOR);
         waveformPath.moveTo(0, halfHeight);
-        for (int i = 1; i < waveform.length; i+=3) {
+        for (int i = 1; i < waveform.length; i++) {
             float yPosition = waveform[i] > 0 ? height - (yIncrement * waveform[i]) : -(yIncrement * waveform[i]);
             waveformPath.lineTo(xIncrement * i, yPosition);
         }
         waveformPath.lineTo(width, halfHeight);
     }
 
-    private void renderWaveform(short[] waveform, float width, float height) {
-        float xIncrement = width / (float) (waveform.length);
-        float yIncrement = height / Y_FACTOR;
-        int halfHeight = (int) (height * HALF_FACTOR);
-        waveformPath.moveTo(0, halfHeight);
-        for (int i = 1; i < waveform.length; i+=3) {
-            float yPosition = waveform[i] > 0 ? height - (yIncrement * waveform[i]) : -(yIncrement * waveform[i]);
-            waveformPath.lineTo(xIncrement * i, yPosition);
-        }
-        waveformPath.lineTo(width, halfHeight);
-    }
+//    private void renderWaveform(short[] waveform, float width, float height) {
+//        float xIncrement = width / (float) (waveform.length);
+//        float yIncrement = height / (Y_FACTOR * Y_FACTOR);
+//        int halfHeight = (int) (height * HALF_FACTOR);
+//        waveformPath.moveTo(0, halfHeight);
+//        for (int i = 1; i < waveform.length; i+=3) {
+//            float yPosition = waveform[i] > 0 ? height - (yIncrement * waveform[i]) : -(yIncrement * waveform[i]);
+//            waveformPath.lineTo(xIncrement * i, yPosition);
+//        }
+//        waveformPath.lineTo(width, halfHeight);
+//    }
 
     private void renderBlank(float width, float height) {
         int y = (int) (height * HALF_FACTOR);

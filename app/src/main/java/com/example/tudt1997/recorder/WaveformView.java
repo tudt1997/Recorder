@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 public class WaveformView extends View {
     private byte[] waveform;
+//    private short[] waveform;
 
     private WaveformRenderer renderer;
 
@@ -42,4 +43,9 @@ public class WaveformView extends View {
         this.waveform = Arrays.copyOf(waveform, waveform.length);
         postInvalidate();
     }
+
+//    public void setWaveform(short[] waveform) {
+//        this.waveform = Arrays.copyOf(waveform, waveform.length);
+//        postInvalidate();
+//    }
 }
